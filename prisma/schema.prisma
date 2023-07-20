@@ -1,0 +1,248 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       String    @id @default(cuid())
+  email    String    @unique
+  name     String
+  password Password?
+  phone    String
+  dob      DateTime
+
+  hourlyRate  Float         @default(40)
+  address     Address?      @relation(fields: [addressId], references: [id])
+  addressId   String?       @unique
+  bankAccount BankAccount[]
+
+  projectMember ProjectMember[]
+  shiftActive   ShiftActive[]
+  shiftDone     ShiftDone[]
+  invoices      Invoice[]
+  roles         Role[]
+  logs          Logs[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Password {
+  hash String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+}
+
+model Role {
+  id   String @id @unique @default(cuid())
+  name String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users       User[]
+  permissions Permission[]
+}
+
+model Permission {
+  id   String @id @unique @default(cuid())
+  name String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roles Role[]
+}
+
+model Note {
+  id    String @id @default(cuid())
+  title String
+  body  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id        String        @id @default(cuid())
+  name      String
+  status    ProjectStatus @default(ACTIVE)
+  startDate DateTime
+  endDate   DateTime?
+
+  address   Address @relation(fields: [addressId], references: [id])
+  addressId String  @unique
+
+  members ProjectMember[]
+
+  shiftActive ShiftActive[]
+  shiftDone   ShiftDone[]
+
+  logs Logs[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ProjectStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum ProjectRole {
+  MANAGER
+  ADMIN
+  SUPERVISOR
+  EMPLOYEE
+}
+
+model ProjectMember {
+  id   String      @id @default(cuid())
+  role ProjectRole @default(EMPLOYEE)
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String  @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+}
+
+model ShiftActive {
+  id         String    @id @default(cuid())
+  start      DateTime  @default(now())
+  end        DateTime?
+  breakStart DateTime?
+  breakEnd   DateTime?
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+}
+
+model ShiftDone {
+  id    String   @id @default(cuid())
+  start DateTime // Normalize server and db time
+  end   DateTime
+  date  DateTime @default(now())
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([invoiceId])
+}
+
+enum InvoiceStatus {
+  PAID
+  UNPAID
+  OVERDUE
+  DRAFT
+}
+
+model Invoice {
+  id     String        @id @default(cuid())
+  from   DateTime
+  to     DateTime
+  amount Float
+  status InvoiceStatus
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  shifts ShiftDone[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model BankAccount {
+  id        String   @id @default(cuid())
+  bankName  String
+  bsb       String
+  account   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  @@index([userId])
+}
+
+model Address {
+  id      String @id @default(cuid())
+  street  String
+  city    String
+  state   String
+  zip     String
+  country String
+
+  User    User?
+  Project Project?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Logs {
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  action    LogAction
+  type      LogType
+  message   String
+  meta      Json
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
+
+  @@index([userId])
+  @@index([projectId])
+}
+
+enum LogType {
+  PROFILE
+  PROJECT
+  INVOICE
+  SHIFT
+  BANK_ACCOUNT
+  ADDRESS
+}
+
+enum LogAction {
+  CREATE
+  UPDATE
+  DELETE
+}
