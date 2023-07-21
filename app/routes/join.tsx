@@ -4,8 +4,7 @@ import {Form, Link} from "@remix-run/react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
 
-import type {NewUser} from "~/models/user.schema";
-import {NewUserSchema} from "~/models/user.schema";
+import {type NewUser, NewUserSchema} from "~/models/user.server";
 
 import {createUser, getUserByEmail} from "~/models/user.server";
 import {createUserSession, getUserId} from "~/session.server";

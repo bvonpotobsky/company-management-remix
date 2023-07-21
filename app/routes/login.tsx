@@ -7,7 +7,7 @@ import {verifyLogin} from "~/models/user.server";
 import {createUserSession, getUserId} from "~/session.server";
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
 
-import {type Login, LoginSchema} from "~/models/user.schema";
+import {type Login, LoginSchema} from "~/models/user.server";
 
 import {Input} from "~/components/ui/input";
 import {Label} from "@radix-ui/react-dropdown-menu";

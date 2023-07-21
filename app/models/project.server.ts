@@ -1,7 +1,6 @@
 import {prisma} from "~/db.server";
+import {z} from "zod";
 
-import type {z} from "zod";
-import type {NewProject, NewProjectSchema} from "~/models/project.schema";
 import type {Project} from "@prisma/client";
 
 export const getAllProjectsWithMembers = async () => {
@@ -75,3 +74,22 @@ export const createProject = async (project: NewProject) => {
 
   return newProject;
 };
+
+// Schema:
+
+export const NewProjectSchema = z
+  .object({
+    name: z.string(),
+    startDate: z.coerce.date(),
+    status: z.enum(["ACTIVE", "INACTIVE", "ARCHIVED"]),
+    address: z.object({
+      street: z.string(),
+      city: z.string(),
+      state: z.string(),
+      zip: z.string(),
+      country: z.string(),
+    }),
+  })
+  .required();
+
+export type NewProject = z.infer<typeof NewProjectSchema>;
