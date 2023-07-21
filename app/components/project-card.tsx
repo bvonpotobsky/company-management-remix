@@ -14,9 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-// import AddMemberToProjectForm from "./add-member-to-project-form";
-
 import {Building, MapPin, MoreHorizontal} from "lucide-react";
+// import AddMemberToProjectForm from "~/components/create-project-member-form";
 
 type Project = SerializeFrom<typeof getAllProjectsWithMembers>[number];
 
@@ -83,8 +82,8 @@ const ProjectOptions: React.FC<{projectId: string}> = ({projectId}) => {
       <DropdownMenuContent side="left" align="start" forceMount>
         <DropdownMenuItem className="cursor-pointer">Edit project</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
-          Add member
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link to={`/admin/projects/${projectId}`}>Add member</Link>
           {/* <AddMemberToProjectForm
             projectId={projectId}
             trigger={

@@ -37,9 +37,6 @@ export const loader = async ({request, params}: LoaderArgs) => {
 export const resolver = zodResolver(AddMemberToProjectSchema);
 
 export const action = async ({request}: ActionArgs) => {
-  console.log("AAaCtion called projects.id");
-  console.log({request});
-
   const {data, errors} = await getValidatedFormData<AddMemberToProject>(request, resolver);
 
   if (errors) return json({errors});

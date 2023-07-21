@@ -50,6 +50,10 @@ export const getAllButMembersOfProjectId = async (id: Project["id"]) => {
     },
   });
 
+  if (!(await members).length) {
+    return [];
+  }
+
   return members;
 };
 

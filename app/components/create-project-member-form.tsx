@@ -37,14 +37,14 @@ const AddMemberToProjectForm: React.FC<{projectId: string; trigger: ReactNode}> 
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader className="flex flex-row items-center justify-between">
-          <AlertDialogTitle>Add member to project</AlertDialogTitle>
+          <AlertDialogTitle>Add member</AlertDialogTitle>
           <AlertDialogCancel className={buttonVariants({variant: "ghost", className: "border-none"})}>
             <X />
           </AlertDialogCancel>
         </AlertDialogHeader>
 
         <RemixFormProvider {...form}>
-          <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-3">
+          <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-3" action="/admin.projects.$id">
             <section className="flex items-center justify-between space-x-4">
               <FormField
                 control={form.control}
