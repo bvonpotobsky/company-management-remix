@@ -1,5 +1,6 @@
-import type {V2_MetaFunction} from "@remix-run/node";
 import {Link} from "@remix-run/react";
+import {type V2_MetaFunction} from "@remix-run/node";
+
 import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
 import {getNameInitials} from "~/helpers";
 
@@ -10,7 +11,7 @@ export const meta: V2_MetaFunction = () => [{title: "Remix Notes"}];
 export default function Index() {
   const user = useOptionalUser();
 
-  const isAdmin = true;
+  const isAdmin = user && user.roles.map((role) => role.name).includes("admin");
 
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
@@ -68,14 +69,16 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="flex max-w-7xl items-center justify-center border p-10">
-          <Link to={`${isAdmin ? "/admin" : "/employee"}`}>
-            <Avatar>
-              <AvatarImage src={undefined} alt={`Profile image of ${user?.name}`} />
-              <AvatarFallback>{getNameInitials(user?.name ?? "AA")}</AvatarFallback>
-            </Avatar>
-          </Link>
-        </div>
+        {user && (
+          <div className="flex max-w-7xl items-center justify-center border p-10">
+            <Link to={`${isAdmin ? "/admin" : "/employee"}`}>
+              <Avatar>
+                <AvatarImage src={undefined} alt={`Profile image of ${user?.name}`} />
+                <AvatarFallback>{getNameInitials(user?.name ?? "AA")}</AvatarFallback>
+              </Avatar>
+            </Link>
+          </div>
+        )}
       </div>
     </main>
   );

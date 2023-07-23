@@ -2,6 +2,7 @@ import {prisma} from "~/db.server";
 import {z} from "zod";
 
 import type {Project} from "@prisma/client";
+import type {UserId} from "~/models/user.server";
 
 export const getAllProjectsWithMembers = async () => {
   const projects = prisma.project.findMany({
@@ -27,7 +28,7 @@ export const getAllProjectsWithMembers = async () => {
   return projects;
 };
 
-export const getProjectById = async (id: Project["id"]) => {
+export const getProjectById = async ({id}: {id: ProjectId}) => {
   const project = prisma.project.findUnique({
     where: {
       id,
@@ -54,7 +55,7 @@ export const getProjectById = async (id: Project["id"]) => {
   return project;
 };
 
-export const createProject = async (project: NewProject) => {
+export const createProject = async ({project}: {project: NewProject}) => {
   const newProject = prisma.project.create({
     data: {
       name: project.name,
@@ -75,8 +76,36 @@ export const createProject = async (project: NewProject) => {
   return newProject;
 };
 
-// Schema:
+export const getAllProjectsByUserId = async ({id}: {id: UserId}) => {
+  const projects = await prisma.project.findMany({
+    where: {
+      members: {
+        some: {
+          userId: id,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      status: true,
+      startDate: true,
+      address: {
+        select: {
+          street: true,
+          city: true,
+          state: true,
+          zip: true,
+          country: true,
+        },
+      },
+    },
+  });
 
+  return projects;
+};
+
+// Schema -> Validation
 export const NewProjectSchema = z
   .object({
     name: z.string(),
@@ -92,4 +121,5 @@ export const NewProjectSchema = z
   })
   .required();
 
+export type ProjectId = Project["id"];
 export type NewProject = z.infer<typeof NewProjectSchema>;

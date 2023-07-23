@@ -19,7 +19,7 @@ import {Building, MapPin, MoreHorizontal} from "lucide-react";
 
 type Project = SerializeFrom<typeof getAllProjectsWithMembers>[number];
 
-const ProjectCard: React.FC<{project: Project}> = ({project}) => {
+const ProjectCardAdmin: React.FC<{project: Project}> = ({project}) => {
   //   const avatars = project..map((member) => {
   //     return {
   //       id: member.id,
@@ -59,7 +59,7 @@ const ProjectCard: React.FC<{project: Project}> = ({project}) => {
           </section>
 
           <Button variant="secondary" asChild>
-            <Link to={`/admin/projects/${project.id}`} className="ml-auto flex items-center">
+            <Link to={`./projects/${project.id}`} className="ml-auto flex items-center">
               View
             </Link>
           </Button>
@@ -69,7 +69,7 @@ const ProjectCard: React.FC<{project: Project}> = ({project}) => {
   );
 };
 
-export default ProjectCard;
+export default ProjectCardAdmin;
 
 const ProjectOptions: React.FC<{projectId: string}> = ({projectId}) => {
   return (

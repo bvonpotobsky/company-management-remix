@@ -1,7 +1,7 @@
 import {prisma} from "~/db.server";
 
 import {z} from "zod";
-import type {Project} from "@prisma/client";
+import type {ProjectId} from "~/models/project.server";
 
 export const addMemberToProject = async (member: AddMemberToProject) => {
   const newMember = prisma.projectMember.create({
@@ -27,7 +27,7 @@ export const addMemberToProject = async (member: AddMemberToProject) => {
   return newMember;
 };
 
-export const getAllButMembersOfProjectId = async (id: Project["id"]) => {
+export const getAllButMembersOfProjectId = async ({id}: {id: ProjectId}) => {
   const members = prisma.user.findMany({
     where: {
       NOT: {

@@ -4,13 +4,26 @@ import {Form, Link} from "@remix-run/react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
 
-import {type NewUser, NewUserSchema} from "~/models/user.server";
+// import {type NewUser, NewUserSchema} from "~/models/user.server";
 
 import {createUser, getUserByEmail} from "~/models/user.server";
 import {createUserSession, getUserId} from "~/session.server";
 
 import {Input} from "~/components/ui/input";
 import {Label} from "~/components/ui/label";
+import {z} from "zod";
+
+export const NewUserSchema = z
+  .object({
+    name: z.string().min(3, {message: "Name must be at least 3 characters long"}),
+    dob: z.coerce.date(),
+    phone: z.string().min(10, {message: "Phone number must be at least 10 characters long"}),
+    email: z.string().email({message: "Please enter a valid email address"}),
+    password: z.string().min(8, {message: "Password must be at least 8 characters long"}),
+  })
+  .required();
+
+export type NewUser = z.infer<typeof NewUserSchema>;
 
 const resolver = zodResolver(NewUserSchema);
 

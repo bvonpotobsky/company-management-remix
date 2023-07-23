@@ -7,12 +7,23 @@ import {verifyLogin} from "~/models/user.server";
 import {createUserSession, getUserId} from "~/session.server";
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
 
-import {type Login, LoginSchema} from "~/models/user.server";
+// import {type Login, LoginSchema} from "~/models/user.server";
 
 import {Input} from "~/components/ui/input";
 import {Label} from "@radix-ui/react-dropdown-menu";
 import {Button} from "~/components/ui/button";
 import {Checkbox} from "~/components/ui/checkbox";
+import {z} from "zod";
+
+export const LoginSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    remember: z.boolean(),
+  })
+  .required();
+
+export type Login = z.infer<typeof LoginSchema>;
 
 const resolver = zodResolver(LoginSchema);
 
@@ -58,7 +69,6 @@ export default function LoginPage() {
       password: "",
       remember: false,
     },
-    resolver,
   });
 
   const errors = form.formState.errors;

@@ -2,20 +2,19 @@ import {useLoaderData} from "@remix-run/react";
 import type {ActionArgs, LoaderArgs} from "@remix-run/node";
 import {json} from "@remix-run/node";
 
-import {requireAdmin} from "~/session.server";
-import {getAllProjectsWithMembers, createProject, NewProjectSchema} from "~/models/project.server";
+import {requireUserId} from "~/session.server";
 import type {NewProject} from "~/models/project.server";
+import {createProject, NewProjectSchema, getAllProjectsByUserId} from "~/models/project.server";
 
 import {getValidatedFormData} from "remix-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
-import ProjectCardAdmin from "~/components/project-card.admin";
-import NewProjectForm from "~/components/create-project-form";
+import ProjectCardEmployee from "~/components/project-card.employee";
 
 export const loader = async ({request}: LoaderArgs) => {
-  await requireAdmin(request);
+  const userId = await requireUserId(request);
 
-  const projects = await getAllProjectsWithMembers();
+  const projects = await getAllProjectsByUserId({id: userId});
   return json({projects});
 };
 
@@ -39,11 +38,11 @@ export default function AdminProjectsRoute() {
     <section className="flex w-full flex-col items-stretch justify-start">
       <header className="mb-4 flex w-full items-center justify-between">
         <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Projects</h3>
-        <NewProjectForm />
+        {/* <NewProjectForm /> */}
       </header>
 
       {projects.map((project) => (
-        <ProjectCardAdmin project={project} key={project.id} />
+        <ProjectCardEmployee project={project} key={project.id} />
       ))}
     </section>
   );

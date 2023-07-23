@@ -2,30 +2,29 @@ import type {LoaderArgs} from "@remix-run/node";
 import {json} from "@remix-run/node";
 import {NavLink, Outlet} from "@remix-run/react";
 
-import {requireAdmin} from "~/session.server";
+import {requireUser} from "~/session.server";
 
+import {ROUTES_EMPLOYEE, type Route} from "~/helpers/constants";
 import {useWindowSize} from "~/hooks/use-window-size";
-import {ROUTES_ADMIN, type Route} from "~/helpers/constants";
-
 import UserHeader from "~/components/user-header";
 
 export const loader = async ({request}: LoaderArgs) => {
-  await requireAdmin(request);
+  await requireUser(request);
   return json({});
 };
 
-export default function AdminPage() {
+export default function AdminRoute() {
   const windowSize = useWindowSize();
 
   return (
     <div className="flex h-[100dvh] flex-col">
       <UserHeader />
-      <main className="flex h-full overflow-y-auto">
+      <main className="flex h-full">
         <div className="flex-1 p-4">
           <Outlet />
         </div>
       </main>
-      {windowSize === "mobile" && <NavbarMobile routes={ROUTES_ADMIN} />}
+      {windowSize === "mobile" && <NavbarMobile routes={ROUTES_EMPLOYEE} />}
     </div>
   );
 }
@@ -36,7 +35,7 @@ const NavbarMobile: React.FC<{
   return (
     <div className="w-full border-t opacity-95">
       <nav className="mx-auto grid h-14 max-w-lg grid-flow-col font-medium" {...props}>
-        {routes.map((route) => (
+        {routes?.map((route) => (
           <NavLink
             key={route.href}
             to={route.href}

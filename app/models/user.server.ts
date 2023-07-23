@@ -5,7 +5,7 @@ import {z} from "zod";
 
 import type {Password, User} from "@prisma/client";
 
-export async function getUserById(id: User["id"]) {
+export async function getUserById(id: UserId) {
   return prisma.user.findUnique({
     where: {id},
     include: {
@@ -18,7 +18,7 @@ export async function getUserById(id: User["id"]) {
   });
 }
 
-export async function getUserByEmail(email: User["email"]) {
+export async function getUserByEmail(email: UserEmail) {
   return prisma.user.findUnique({
     where: {email},
     include: {
@@ -33,6 +33,8 @@ export async function getUserByEmail(email: User["email"]) {
 
 export async function createUser(user: NewUser) {
   const hashedPassword = await bcrypt.hash(user.password, 10);
+
+  console.log({hashedPassword});
 
   return prisma.user.create({
     data: {
@@ -49,11 +51,11 @@ export async function createUser(user: NewUser) {
   });
 }
 
-export async function deleteUserByEmail(email: User["email"]) {
+export async function deleteUserByEmail(email: UserEmail) {
   return prisma.user.delete({where: {email}});
 }
 
-export async function verifyLogin(email: User["email"], password: Password["hash"]) {
+export async function verifyLogin(email: UserEmail, password: Password["hash"]) {
   const userWithPassword = await prisma.user.findUnique({
     where: {email},
     include: {
@@ -91,8 +93,6 @@ export const LoginSchema = z
   })
   .required();
 
-export type Login = z.infer<typeof LoginSchema>;
-
 export const NewUserSchema = z
   .object({
     name: z.string().min(3, {message: "Name must be at least 3 characters long"}),
@@ -103,4 +103,7 @@ export const NewUserSchema = z
   })
   .required();
 
+export type UserId = User["id"];
+export type UserEmail = User["email"];
 export type NewUser = z.infer<typeof NewUserSchema>;
+export type Login = z.infer<typeof LoginSchema>;

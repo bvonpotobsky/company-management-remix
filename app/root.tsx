@@ -1,5 +1,5 @@
 import {cssBundleHref} from "@remix-run/css-bundle";
-import type {LinksFunction, LoaderArgs} from "@remix-run/node";
+import type {LinksFunction, LoaderArgs, LoaderFunction} from "@remix-run/node";
 import {json} from "@remix-run/node";
 import {Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration} from "@remix-run/react";
 
@@ -13,8 +13,12 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{rel: "stylesheet", href: cssBundleHref}] : []),
 ];
 
-export const loader = async ({request}: LoaderArgs) => {
-  return json({user: await getUser(request)});
+type LoaderData = {
+  user: Awaited<ReturnType<typeof getUser>>;
+};
+
+export const loader: LoaderFunction = async ({request}: LoaderArgs) => {
+  return json<LoaderData>({user: await getUser(request)});
 };
 
 function App() {

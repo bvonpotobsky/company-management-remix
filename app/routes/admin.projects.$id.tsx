@@ -28,9 +28,9 @@ export const loader = async ({request, params}: LoaderArgs) => {
 
   invariant(params.id, `You must provide a project id to this route.`);
 
-  const employees = await getAllButMembersOfProjectId(params.id);
+  const employees = await getAllButMembersOfProjectId({id: params.id});
 
-  const project = await getProjectById(params.id);
+  const project = await getProjectById({id: params.id});
   return json<ProjectLoaderData>({project, employees});
 };
 
@@ -47,7 +47,7 @@ export const action = async ({request}: ActionArgs) => {
   return json({newMember});
 };
 
-export default function AdminProjectsRoute() {
+export default function AdminProjecIdRoute() {
   const {project} = useLoaderData<ProjectLoaderData>();
 
   invariant(project, `You must provide a project id to this route.`);
@@ -55,7 +55,7 @@ export default function AdminProjectsRoute() {
   return (
     <section className="flex w-full flex-col items-center justify-between">
       <header className="mb-4 flex w-full items-center justify-between">
-        <GoBackURL />
+        <GoBackURL to="../projects" />
         <AddMemberToProjectForm
           projectId={project.id}
           trigger={<button className={buttonVariants({variant: "outline"})}>Add member</button>}
