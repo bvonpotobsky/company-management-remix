@@ -1,5 +1,6 @@
 import {json} from "@remix-run/node";
 import {prisma} from "~/db.server";
+import {createUserLog} from "~/models/log.server";
 
 import type {ProjectId} from "~/models/project.server";
 import type {UserId} from "~/models/user.server";
@@ -41,6 +42,23 @@ export const createUserActiveShift = async ({userId, projectId}: {userId: UserId
     },
   });
 
+  if (!shift) {
+    return json({error: "Shift not created"}, {status: 500});
+  }
+
+  const log = await createUserLog({
+    userId: user.id,
+    message: `Clock in at ${project.name}`,
+    meta: {
+      type: "shift",
+      action: "create",
+    },
+  });
+
+  if (!log) {
+    // TODO: Handle inside erros
+  }
+
   return shift;
 };
 
@@ -57,7 +75,7 @@ export const userCheckOut = async ({userId, shiftId}: {userId: UserId; shiftId: 
     return json({error: "Shift not found"}, {status: 404});
   }
 
-  const shiftDone = await prisma.shiftDone.create({
+  const shiftCompleted = await prisma.shiftCompleted.create({
     data: {
       start: shift.start,
       end: new Date(Date.now()),
@@ -74,7 +92,7 @@ export const userCheckOut = async ({userId, shiftId}: {userId: UserId; shiftId: 
     },
   });
 
-  if (!shiftDone) {
+  if (!shiftCompleted) {
     return json({error: "Shift not created"}, {status: 500});
   }
 
@@ -85,7 +103,7 @@ export const userCheckOut = async ({userId, shiftId}: {userId: UserId; shiftId: 
     },
   });
 
-  return shiftDone;
+  return shiftCompleted;
 };
 
 export const getActiveShiftByUserId = async ({id}: {id: UserId}) => {

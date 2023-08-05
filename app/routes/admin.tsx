@@ -34,7 +34,7 @@ const NavbarMobile: React.FC<{
   routes: Route[] & React.HTMLAttributes<HTMLDivElement>;
 }> = ({routes, ...props}) => {
   return (
-    <div className="w-full border-t opacity-95">
+    <div className="mt-2 w-full border-t opacity-95">
       <nav className="mx-auto grid h-14 max-w-lg grid-flow-col font-medium" {...props}>
         {routes.map((route) => (
           <NavLink

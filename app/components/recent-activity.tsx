@@ -24,14 +24,14 @@ const RecentActivity: React.FC<{logs: LoaderData["logs"]}> = ({logs}) => {
           ? logs.map((log) => (
               <div className="my-2 flex items-center space-y-2" key={log.id}>
                 <div className="flex space-x-2 space-y-1">
-                  <Badge className="rounded-sm text-[10px] uppercase">{log.action}</Badge>
+                  <Badge className="rounded-sm text-[10px] uppercase">{log.meta.type}</Badge>
                   <p className="text-sm font-medium leading-none">{log.message}</p>
                 </div>
 
                 <div className="ml-auto flex flex-col text-right text-xs text-muted-foreground sm:flex-row">
-                  <p>{format(new Date(log.updatedAt), "HH:mmaaa")}</p>
+                  <p>{format(new Date(log.createdAt), "HH:mmaaa")}</p>
                   <span className="mx-1 hidden sm:inline">·</span>
-                  <p>{format(new Date(log.updatedAt), "dd MMM")}</p>
+                  <p>{format(new Date(log.createdAt), "dd MMM")}</p>
                 </div>
               </div>
             ))

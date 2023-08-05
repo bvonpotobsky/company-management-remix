@@ -1,3 +1,4 @@
+import {z} from "zod";
 import {prisma} from "~/db.server";
 
 import type {UserId} from "~/models/user.server";
@@ -26,7 +27,11 @@ export const getAllLogsByUserId = async ({id}: {id: UserId}) => {
     where: {
       userId: id,
     },
-    include: {
+    select: {
+      id: true,
+      message: true,
+      meta: true,
+      createdAt: true,
       user: {
         select: {
           id: true,
@@ -42,3 +47,31 @@ export const getAllLogsByUserId = async ({id}: {id: UserId}) => {
 
   return logs;
 };
+
+export const createUserLog = async ({userId, message, meta}: CreateUserLog) => {
+  const log = await prisma.logs.create({
+    data: {
+      message,
+      meta,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+  });
+
+  return log;
+};
+
+// Schema: app/schemas/log.ts
+const createUserLogSchema = z.object({
+  userId: z.string(),
+  message: z.string(),
+  meta: z.object({
+    action: z.enum(["create", "update", "delete"]),
+    type: z.enum(["shift", "project", "user"]),
+  }),
+});
+
+type CreateUserLog = z.infer<typeof createUserLogSchema>;

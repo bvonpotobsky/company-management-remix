@@ -23,12 +23,12 @@ model User {
   addressId   String?       @unique
   bankAccount BankAccount[]
 
-  projectMember ProjectMember[]
-  shiftActive   ShiftActive[]
-  shiftDone     ShiftDone[]
-  invoices      Invoice[]
-  roles         Role[]
-  logs          Logs[]
+  projectMember  ProjectMember[]
+  shiftActive    ShiftActive[]
+  ShiftCompleted ShiftCompleted[]
+  invoices       Invoice[]
+  roles          Role[]
+  logs           Logs[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,8 +83,8 @@ model Project {
 
   members ProjectMember[]
 
-  shiftActive ShiftActive[]
-  shiftDone   ShiftDone[]
+  shiftActive    ShiftActive[]
+  ShiftCompleted ShiftCompleted[]
 
   logs Logs[]
 
@@ -140,7 +140,7 @@ model ShiftActive {
   @@index([projectId])
 }
 
-model ShiftDone {
+model ShiftCompleted {
   id    String   @id @default(cuid())
   start DateTime // Normalize server and db time
   end   DateTime
@@ -179,7 +179,7 @@ model Invoice {
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
 
-  shifts ShiftDone[]
+  shifts ShiftCompleted[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -217,13 +217,12 @@ model Address {
 }
 
 model Logs {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  action    LogAction
-  type      LogType
-  message   String
-  meta      Json
+  id      String @id @default(cuid())
+  message String
+  meta    Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
@@ -233,19 +232,4 @@ model Logs {
 
   @@index([userId])
   @@index([projectId])
-}
-
-enum LogType {
-  PROFILE
-  PROJECT
-  INVOICE
-  SHIFT
-  BANK_ACCOUNT
-  ADDRESS
-}
-
-enum LogAction {
-  CREATE
-  UPDATE
-  DELETE
 }

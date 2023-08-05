@@ -1,4 +1,4 @@
-import type {ShiftDone} from "@prisma/client";
+import type {ShiftCompleted} from "@prisma/client";
 
 export const getNameInitials = (fullName: string) => {
   const names = fullName.split(" ");
@@ -15,7 +15,7 @@ export const calculateHoursWorked = (startTime: Date, endTime: Date) => {
   return totalInMiliseconds;
 };
 
-export const getTotalHoursWorkedInInvoice = (shifts: ShiftDone[]) => {
+export const getTotalHoursWorkedInInvoice = (shifts: ShiftCompleted[]) => {
   const totalWorkedInMiliseconds = shifts.reduce((acc, shift) => {
     const hoursWorked = calculateHoursWorked(new Date(shift.start), new Date(shift.end));
 

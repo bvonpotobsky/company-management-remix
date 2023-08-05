@@ -4,7 +4,12 @@ import {calculateHoursWorked} from "~/helpers";
 
 export const getAllInvoices = async () => {
   const invoices = prisma.invoice.findMany({
-    include: {
+    select: {
+      id: true,
+      amount: true,
+      status: true,
+      from: true,
+      to: true,
       user: {
         select: {
           id: true,
@@ -35,13 +40,23 @@ export const getInvoiceById = async ({id}: {id: string}) => {
   return invoice;
 };
 
-export const getCurrentUserInvoice = async ({id}: {id: string}) => {
+export const getAllInvoicesByUserId = async ({id}: {id: string}) => {
   const invoices = prisma.invoice.findMany({
     where: {
       userId: id,
     },
-    include: {
-      user: true,
+    select: {
+      id: true,
+      amount: true,
+      status: true,
+      from: true,
+      to: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
 
@@ -63,7 +78,7 @@ export const createInvoiceByUserId = async ({id, fromDate, toDate}: {id: string;
     throw new Error("Profile not found");
   }
 
-  const shifts = await prisma.shiftDone.findMany({
+  const shifts = await prisma.shiftCompleted.findMany({
     where: {
       userId: user.id,
       date: {
@@ -111,7 +126,7 @@ export const createAllUsersInvoices = async ({fromDate, toDate}: {fromDate: Date
     // It will return all profiles that have shifts in the given date range
     // and that don't have invoices in the given date range yet
     where: {
-      shiftDone: {
+      ShiftCompleted: {
         some: {
           date: {
             gte: _from,
@@ -130,7 +145,7 @@ export const createAllUsersInvoices = async ({fromDate, toDate}: {fromDate: Date
 
   const invoices = await Promise.all(
     users.map(async (user) => {
-      const shifts = await prisma.shiftDone.findMany({
+      const shifts = await prisma.shiftCompleted.findMany({
         where: {
           userId: user.id,
           date: {

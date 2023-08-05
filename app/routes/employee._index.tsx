@@ -6,17 +6,19 @@ import {format} from "date-fns";
 import {requireUser} from "~/session.server";
 
 import {getAllProjectsByUserId} from "~/models/project.server";
+import {getAllCompletedShiftsByUserId} from "~/models/shift-completed.server";
 import {getAllLogsByUserId} from "~/models/log.server";
 
 import ProjectCardEmployee from "~/components/project-card.employee";
 import RecentActivity from "~/components/recent-activity";
+import ShiftsTable from "~/components/shifts-table";
 import RealTimeClock from "~/components/date-real-time";
-import {CheckInButton, CheckOutButton} from "~/components/check-in-out.button";
 
 export type LoaderData = {
   projects: Awaited<ReturnType<typeof getAllProjectsByUserId>>;
   logs: Awaited<ReturnType<typeof getAllLogsByUserId>>;
   userName: string;
+  latestShifts: Awaited<ReturnType<typeof getAllCompletedShiftsByUserId>>;
 };
 
 export const loader: LoaderFunction = async ({request}: LoaderArgs) => {
@@ -24,14 +26,13 @@ export const loader: LoaderFunction = async ({request}: LoaderArgs) => {
 
   const projects = await getAllProjectsByUserId({id: user.id});
   const logs = await getAllLogsByUserId({id: user.id});
+  const latestShifts = await getAllCompletedShiftsByUserId({id: user.id});
 
-  return json<LoaderData>({projects, logs, userName: user.name});
+  return json<LoaderData>({projects, logs, userName: user.name, latestShifts});
 };
 
 export default function EmployeeRoute() {
-  const {projects, logs, userName} = useLoaderData<LoaderData>();
-
-  console.log({logs});
+  const {projects, logs, userName, latestShifts} = useLoaderData<LoaderData>();
 
   const date = new Date();
 
@@ -46,10 +47,10 @@ export default function EmployeeRoute() {
           <RealTimeClock />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-2 gap-4">
         <CheckInButton />
         <CheckOutButton />
-      </div>
+      </div> */}
       <div className="grid w-full gap-3 md:grid-cols-2 lg:grid-cols-6">
         {projects.map((project) => (
           <ProjectCardEmployee project={project} key={project.id} />
@@ -61,7 +62,19 @@ export default function EmployeeRoute() {
           return {
             ...log,
             createdAt: new Date(log.createdAt), // Parse the date (this is a string)
-            updatedAt: new Date(log.updatedAt), // Parse the date (this is a string)
+          };
+        })}
+      />
+
+      <ShiftsTable
+        shifts={latestShifts.map((shift) => {
+          return {
+            ...shift,
+            date: new Date(shift.date),
+            start: new Date(shift.start),
+            end: new Date(shift.end),
+            createdAt: new Date(shift.createdAt),
+            updatedAt: new Date(shift.updatedAt),
           };
         })}
       />
