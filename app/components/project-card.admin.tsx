@@ -83,15 +83,7 @@ const ProjectOptions: React.FC<{projectId: string}> = ({projectId}) => {
         <DropdownMenuItem className="cursor-pointer">Edit project</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link to={`/admin/projects/${projectId}`}>Add member</Link>
-          {/* <AddMemberToProjectForm
-            projectId={projectId}
-            trigger={
-              <button className="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                Add member
-              </button>
-            }
-          /> */}
+          <Link to={`/admin/projects/${projectId}?addMember`}>Add member</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer text-red-500">Delete project</DropdownMenuItem>

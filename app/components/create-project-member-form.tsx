@@ -1,5 +1,4 @@
-import {type ReactNode} from "react";
-import {Form, useRouteLoaderData} from "@remix-run/react";
+import {Form, Link, useRouteLoaderData, useSearchParams} from "@remix-run/react";
 import {RemixFormProvider, useRemixForm} from "remix-hook-form";
 
 import {type AddMemberToProject} from "~/models/project-member.server";
@@ -21,7 +20,7 @@ import {Button, buttonVariants} from "~/components/ui/button";
 import {FormControl, FormField, FormItem, FormMessage} from "~/components/ui/form";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
 
-const AddMemberToProjectForm: React.FC<{projectId: string; trigger: ReactNode}> = ({projectId, trigger}) => {
+const AddMemberToProjectForm: React.FC<{projectId: string}> = ({projectId}) => {
   const {employees} = useRouteLoaderData("routes/admin.projects.$id") as ProjectLoaderData;
 
   const form = useRemixForm<AddMemberToProject>({
@@ -32,14 +31,24 @@ const AddMemberToProjectForm: React.FC<{projectId: string; trigger: ReactNode}> 
     },
   });
 
+  const [searchParams] = useSearchParams();
+
+  const isModalOpen = searchParams.has("addMember") && !form.formState.isSubmitSuccessful;
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog open={isModalOpen}>
+      <AlertDialogTrigger asChild>
+        <Link to="/?addMember" className={buttonVariants({variant: "outline"})}>
+          Add member
+        </Link>
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader className="flex flex-row items-center justify-between">
           <AlertDialogTitle>Add member</AlertDialogTitle>
-          <AlertDialogCancel className={buttonVariants({variant: "ghost", className: "border-none"})}>
-            <X />
+          <AlertDialogCancel asChild className={buttonVariants({variant: "ghost", className: "border-none"})}>
+            <button onClick={() => searchParams.delete("addMember")}>
+              <X />
+            </button>
           </AlertDialogCancel>
         </AlertDialogHeader>
 

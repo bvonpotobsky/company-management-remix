@@ -15,7 +15,7 @@ import {
   addMemberToProject,
 } from "~/models/project-member.server";
 import AddMemberToProjectForm from "~/components/create-project-member-form";
-import {buttonVariants} from "~/components/ui/button";
+
 import {zodResolver} from "@hookform/resolvers/zod";
 
 export type ProjectLoaderData = {
@@ -52,14 +52,13 @@ export default function AdminProjecIdRoute() {
 
   invariant(project, `You must provide a project id to this route.`);
 
+  // const isAddMemberModalOpen =
+
   return (
     <section className="flex w-full flex-col items-center justify-between">
       <header className="mb-4 flex w-full items-center justify-between">
         <GoBackURL to="../projects" />
-        <AddMemberToProjectForm
-          projectId={project.id}
-          trigger={<button className={buttonVariants({variant: "outline"})}>Add member</button>}
-        />
+        <AddMemberToProjectForm projectId={project.id} />
       </header>
 
       {JSON.stringify(project, null, 2)}
