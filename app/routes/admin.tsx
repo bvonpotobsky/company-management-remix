@@ -21,7 +21,7 @@ export default function AdminPage() {
     <div className="flex h-[100dvh] flex-col">
       <UserHeader />
       <main className="flex h-full overflow-y-auto">
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 pt-0">
           <Outlet />
         </div>
       </main>

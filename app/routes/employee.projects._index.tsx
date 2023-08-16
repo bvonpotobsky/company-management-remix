@@ -35,9 +35,9 @@ export default function AdminProjectsRoute() {
   const {projects} = useLoaderData<typeof loader>();
 
   return (
-    <section className="flex w-full flex-col items-stretch justify-start">
-      <header className="mb-4 flex w-full items-center justify-between">
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Projects</h3>
+    <section className="relative flex w-full flex-col items-stretch justify-start">
+      <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
+        <h3 className="text-2xl font-semibold tracking-tight">Projects</h3>
         {/* <NewProjectForm /> */}
       </header>
 

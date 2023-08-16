@@ -48,7 +48,7 @@ export const getAllLogsByUserId = async ({id}: {id: UserId}) => {
   return logs;
 };
 
-export const createUserLog = async ({userId, message, meta}: CreateUserLog) => {
+export const createShiftLog = async ({userId, projectId, message, meta}: CreateShiftLog) => {
   const log = await prisma.logs.create({
     data: {
       message,
@@ -58,20 +58,26 @@ export const createUserLog = async ({userId, message, meta}: CreateUserLog) => {
           id: userId,
         },
       },
+      project: {
+        connect: {
+          id: projectId,
+        },
+      },
     },
   });
 
   return log;
 };
 
-// Schema: app/schemas/log.ts
-const createUserLogSchema = z.object({
+// Schema
+const createShiftLogSchema = z.object({
   userId: z.string(),
   message: z.string(),
+  projectId: z.string(),
   meta: z.object({
     action: z.enum(["create", "update", "delete"]),
-    type: z.enum(["shift", "project", "user"]),
+    type: z.enum(["shift"]),
   }),
 });
 
-type CreateUserLog = z.infer<typeof createUserLogSchema>;
+type CreateShiftLog = z.infer<typeof createShiftLogSchema>;

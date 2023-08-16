@@ -59,7 +59,7 @@ const ProjectCardAdmin: React.FC<{project: Project}> = ({project}) => {
           </section>
 
           <Button variant="secondary" asChild>
-            <Link to={`./projects/${project.id}`} className="ml-auto flex items-center">
+            <Link to={`./${project.id}`} className="ml-auto flex items-center">
               View
             </Link>
           </Button>

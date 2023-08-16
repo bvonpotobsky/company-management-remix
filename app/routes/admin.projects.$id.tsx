@@ -1,22 +1,23 @@
 import {useLoaderData} from "@remix-run/react";
 import type {ActionArgs, LoaderArgs, SerializeFrom} from "@remix-run/node";
-import {json} from "@remix-run/node";
+import {json, redirect} from "@remix-run/node";
 import invariant from "tiny-invariant";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 import {requireAdmin} from "~/session.server";
+import {getValidatedFormData} from "remix-hook-form";
 
 import GoBackURL from "~/components/go-back-url";
-import {getProjectById} from "~/models/project.server";
-import {getValidatedFormData} from "remix-hook-form";
+
+import AddMemberToProjectForm from "~/components/create-project-member-form";
 import {
   type AddMemberToProject,
   getAllButMembersOfProjectId,
   AddMemberToProjectSchema,
   addMemberToProject,
 } from "~/models/project-member.server";
-import AddMemberToProjectForm from "~/components/create-project-member-form";
 
-import {zodResolver} from "@hookform/resolvers/zod";
+import {getProjectById} from "~/models/project.server";
 
 export type ProjectLoaderData = {
   project: Awaited<ReturnType<typeof getProjectById>>; // SerializeFrom return error with dates???
@@ -44,7 +45,7 @@ export const action = async ({request}: ActionArgs) => {
   const newMember = await addMemberToProject({projectId: data.projectId, userId: data.userId, role: "EMPLOYEE"});
   if (!newMember) return json({errors: {name: "Something went wrong"}}, {status: 500});
 
-  return json({newMember});
+  return redirect(`/admin/projects/${data.projectId}`);
 };
 
 export default function AdminProjecIdRoute() {
@@ -55,8 +56,8 @@ export default function AdminProjecIdRoute() {
   // const isAddMemberModalOpen =
 
   return (
-    <section className="flex w-full flex-col items-center justify-between">
-      <header className="mb-4 flex w-full items-center justify-between">
+    <section className="relative flex w-full flex-col items-center justify-between">
+      <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
         <GoBackURL to="../projects" />
         <AddMemberToProjectForm projectId={project.id} />
       </header>

@@ -1,9 +1,10 @@
 import {json} from "@remix-run/node";
 import {prisma} from "~/db.server";
-import {createUserLog} from "~/models/log.server";
 
 import type {ProjectId} from "~/models/project.server";
 import type {UserId} from "~/models/user.server";
+
+import {createShiftLog} from "~/models/log.server";
 
 export const createUserActiveShift = async ({userId, projectId}: {userId: UserId; projectId: ProjectId}) => {
   const user = await prisma.user.findUnique({
@@ -46,8 +47,9 @@ export const createUserActiveShift = async ({userId, projectId}: {userId: UserId
     return json({error: "Shift not created"}, {status: 500});
   }
 
-  const log = await createUserLog({
+  const log = await createShiftLog({
     userId: user.id,
+    projectId: project.id,
     message: `Clock in at ${project.name}`,
     meta: {
       type: "shift",
@@ -62,48 +64,54 @@ export const createUserActiveShift = async ({userId, projectId}: {userId: UserId
   return shift;
 };
 
-export const userCheckOut = async ({userId, shiftId}: {userId: UserId; shiftId: string}) => {
+export const userCheckOut = async ({shiftId}: {shiftId: string}) => {
   // Should we check if the user is the same as the shift?
 
-  const shift = await prisma.shiftActive.findUnique({
+  const activeShift = await prisma.shiftActive.findFirst({
     where: {
       id: shiftId,
     },
+    select: {
+      id: true,
+      start: true,
+      userId: true,
+      projectId: true,
+    },
   });
 
-  if (!shift) {
+  if (!activeShift) {
     return json({error: "Shift not found"}, {status: 404});
   }
 
-  const shiftCompleted = await prisma.shiftCompleted.create({
+  const completedShift = await prisma.shiftCompleted.create({
     data: {
-      start: shift.start,
+      start: activeShift.start,
       end: new Date(Date.now()),
       user: {
         connect: {
-          id: shift.userId,
+          id: activeShift.userId,
         },
       },
       project: {
         connect: {
-          id: shift.projectId,
+          id: activeShift.projectId,
         },
       },
     },
   });
 
-  if (!shiftCompleted) {
+  if (!completedShift) {
     return json({error: "Shift not created"}, {status: 500});
   }
 
   // TODO: check if this is the correct way to delete
   await prisma.shiftActive.delete({
     where: {
-      id: shift.id,
+      id: activeShift.id,
     },
   });
 
-  return shiftCompleted;
+  return completedShift;
 };
 
 export const getActiveShiftByUserId = async ({id}: {id: UserId}) => {

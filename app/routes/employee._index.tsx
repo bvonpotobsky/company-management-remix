@@ -6,7 +6,7 @@ import {format} from "date-fns";
 import {requireUser} from "~/session.server";
 
 import {getAllProjectsByUserId} from "~/models/project.server";
-import {getAllCompletedShiftsByUserId} from "~/models/shift-completed.server";
+import {getLastWeekCompletedShiftsByUserId} from "~/models/shift-completed.server";
 import {getAllLogsByUserId} from "~/models/log.server";
 
 import ProjectCardEmployee from "~/components/project-card.employee";
@@ -15,10 +15,10 @@ import ShiftsTable from "~/components/shifts-table";
 import RealTimeClock from "~/components/date-real-time";
 
 export type LoaderData = {
+  userName: string;
   projects: Awaited<ReturnType<typeof getAllProjectsByUserId>>;
   logs: Awaited<ReturnType<typeof getAllLogsByUserId>>;
-  userName: string;
-  latestShifts: Awaited<ReturnType<typeof getAllCompletedShiftsByUserId>>;
+  latestShifts: Awaited<ReturnType<typeof getLastWeekCompletedShiftsByUserId>>;
 };
 
 export const loader: LoaderFunction = async ({request}: LoaderArgs) => {
@@ -26,7 +26,7 @@ export const loader: LoaderFunction = async ({request}: LoaderArgs) => {
 
   const projects = await getAllProjectsByUserId({id: user.id});
   const logs = await getAllLogsByUserId({id: user.id});
-  const latestShifts = await getAllCompletedShiftsByUserId({id: user.id});
+  const latestShifts = await getLastWeekCompletedShiftsByUserId({id: user.id});
 
   return json<LoaderData>({projects, logs, userName: user.name, latestShifts});
 };
@@ -38,7 +38,7 @@ export default function EmployeeRoute() {
 
   return (
     <section className="flex-col space-y-4 md:flex">
-      <div className="flex w-full items-center justify-between gap-x-2">
+      <header className="flex w-full items-center justify-between gap-x-2 py-3">
         <p className="text-lg font-semibold">{`Hi, ${userName.slice(0, userName.indexOf(" "))}!`}</p>
         <div className="flex flex-col text-right text-sm sm:flex-row">
           <p>
@@ -46,11 +46,8 @@ export default function EmployeeRoute() {
           </p>
           <RealTimeClock />
         </div>
-      </div>
-      {/* <div className="grid grid-cols-2 gap-4">
-        <CheckInButton />
-        <CheckOutButton />
-      </div> */}
+      </header>
+
       <div className="grid w-full gap-3 md:grid-cols-2 lg:grid-cols-6">
         {projects.map((project) => (
           <ProjectCardEmployee project={project} key={project.id} />

@@ -23,22 +23,27 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/c
 const AddMemberToProjectForm: React.FC<{projectId: string}> = ({projectId}) => {
   const {employees} = useRouteLoaderData("routes/admin.projects.$id") as ProjectLoaderData;
 
+  const defaultValues: Partial<AddMemberToProject> = {
+    userId: "",
+    role: "EMPLOYEE",
+    projectId,
+  };
+
   const form = useRemixForm<AddMemberToProject>({
-    defaultValues: {
-      userId: "",
-      role: "EMPLOYEE",
-      projectId,
-    },
+    defaultValues,
   });
 
-  const [searchParams] = useSearchParams();
+  // const errors = form.formState.errors;
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const onCloseModal = () => setSearchParams({});
 
   const isModalOpen = searchParams.has("addMember") && !form.formState.isSubmitSuccessful;
 
   return (
     <AlertDialog open={isModalOpen}>
       <AlertDialogTrigger asChild>
-        <Link to="/?addMember" className={buttonVariants({variant: "outline"})}>
+        <Link to=".?addMember" className={buttonVariants({variant: "outline"})}>
           Add member
         </Link>
       </AlertDialogTrigger>
@@ -46,7 +51,7 @@ const AddMemberToProjectForm: React.FC<{projectId: string}> = ({projectId}) => {
         <AlertDialogHeader className="flex flex-row items-center justify-between">
           <AlertDialogTitle>Add member</AlertDialogTitle>
           <AlertDialogCancel asChild className={buttonVariants({variant: "ghost", className: "border-none"})}>
-            <button onClick={() => searchParams.delete("addMember")}>
+            <button onClick={onCloseModal}>
               <X />
             </button>
           </AlertDialogCancel>
@@ -120,7 +125,7 @@ const AddMemberToProjectForm: React.FC<{projectId: string}> = ({projectId}) => {
 
             <AlertDialogFooter className="flex flex-row items-center justify-end space-x-4 space-y-2">
               <AlertDialogCancel asChild>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={onCloseModal}>
                   Cancel
                 </Button>
               </AlertDialogCancel>

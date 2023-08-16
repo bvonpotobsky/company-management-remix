@@ -58,10 +58,12 @@ export const getAllButMembersOfProjectId = async ({id}: {id: ProjectId}) => {
 };
 
 // Schema:
-export const AddMemberToProjectSchema = z.object({
-  userId: z.string(),
-  projectId: z.string(),
-  role: z.enum(["MANAGER", "ADMIN", "SUPERVISOR", "EMPLOYEE"]),
-});
+export const AddMemberToProjectSchema = z
+  .object({
+    userId: z.string(),
+    projectId: z.string(),
+    role: z.enum(["MANAGER", "ADMIN", "SUPERVISOR", "EMPLOYEE"]),
+  })
+  .required();
 
 export type AddMemberToProject = z.infer<typeof AddMemberToProjectSchema>;

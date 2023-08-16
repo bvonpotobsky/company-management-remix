@@ -126,7 +126,7 @@ export const createAllUsersInvoices = async ({fromDate, toDate}: {fromDate: Date
     // It will return all profiles that have shifts in the given date range
     // and that don't have invoices in the given date range yet
     where: {
-      ShiftCompleted: {
+      shiftCompleted: {
         some: {
           date: {
             gte: _from,

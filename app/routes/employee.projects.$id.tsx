@@ -33,13 +33,13 @@ export const loader = async ({request, params}: LoaderArgs) => {
 //   // Clock In / Clock Out
 // }
 
-export default function AdminProjecIdRoute() {
+export default function EmployeeProjectIdRoute() {
   const {project, userId, activeShift} = useLoaderData<ProjectLoaderData>();
   invariant(project, `You must provide a project id to this route.`);
 
   return (
-    <section className="flex w-full flex-col items-center justify-between">
-      <header className="mb-4 flex w-full items-center justify-between">
+    <section className="relative flex w-full flex-col items-center justify-between">
+      <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
         <GoBackURL to="../projects" />
 
         <Badge className="text-base" variant="sucess">
@@ -50,7 +50,7 @@ export default function AdminProjecIdRoute() {
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-semibold">{project.name}</h1>
         {activeShift ? (
-          <CheckOutButton userId={userId} shiftId={activeShift.id} projectId={project.id} projectName={project.name} />
+          <CheckOutButton shiftId={activeShift.id} projectId={project.id} projectName={project.name} />
         ) : (
           <CheckInButton userId={userId} projectId={project.id} projectName={project.name} />
         )}

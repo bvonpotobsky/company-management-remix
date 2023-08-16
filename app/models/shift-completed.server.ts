@@ -23,10 +23,10 @@ export const getAllCompletedShiftsByUserId = async ({id}: {id: UserId}) => {
   return shifts;
 };
 
-export const getLastWeekCompletedShiftsByUserId = async ({userId}: {userId: UserId}) => {
+export const getLastWeekCompletedShiftsByUserId = async ({id}: {id: UserId}) => {
   const shifts = await prisma.shiftCompleted.findMany({
     where: {
-      userId,
+      userId: id,
       date: {
         gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
       },

@@ -55,13 +55,12 @@ export const CheckInButton: React.FC<CheckInProps> = ({userId, projectId, projec
 };
 
 interface CheckOutProps {
-  userId: string;
   shiftId: string;
   projectName: string;
   projectId: string;
 }
 
-export const CheckOutButton: React.FC<CheckOutProps> = ({userId, shiftId, projectId, projectName}) => {
+export const CheckOutButton: React.FC<CheckOutProps> = ({shiftId, projectId, projectName}) => {
   const navigation = useNavigation();
 
   return (
@@ -70,19 +69,12 @@ export const CheckOutButton: React.FC<CheckOutProps> = ({userId, shiftId, projec
         Check Out
       </AlertDialogTrigger>
       <AlertDialogContent className="flex flex-col items-center justify-center overflow-y-scroll">
-        <AlertDialogHeader className="flex w-full flex-row items-center justify-end">
-          <AlertDialogCancel className={buttonVariants({variant: "ghost", className: "border-none"})}>
-            <XIcon />
-          </AlertDialogCancel>
-        </AlertDialogHeader>
-
-        <AlertDialogDescription className="text-lg">
-          Are you sure you want to clock Out to <span className="font-semibold">{projectName}</span>?
+        <AlertDialogDescription className="text-base md:text-lg">
+          Are you sure you want to Clock Off to <span className="font-semibold">{projectName}</span>?
         </AlertDialogDescription>
 
         <Form method="post" action="/employee/projects/check-out">
           <AlertDialogFooter className="flex flex-row items-center space-x-2">
-            <input type="hidden" name="userId" value={userId} />
             <input type="hidden" name="activeShiftId" value={shiftId} />
             <input type="hidden" name="projectId" value={projectId} />
             <AlertDialogAction type="submit" className={buttonVariants({variant: "secondary"})}>

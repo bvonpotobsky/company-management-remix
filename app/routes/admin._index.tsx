@@ -5,7 +5,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "~/components/ui/card";
 
 export default function NoteIndexPage() {
   return (
-    <section className="flex-col space-y-4 md:flex">
+    <section className="flex-col space-y-4 pt-4 md:flex">
       <AnalyticsCards />
       <div className="grid w-full gap-3 md:grid-cols-2 lg:grid-cols-6">
         {/* {logs && <RecentLogs logs={logs} />} */}

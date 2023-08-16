@@ -1,4 +1,4 @@
-import {Form} from "@remix-run/react";
+import {Form, Link, useSearchParams} from "@remix-run/react";
 import {RemixFormProvider, useRemixForm} from "remix-hook-form";
 
 import {type NewProject} from "~/models/project.server";
@@ -46,13 +46,23 @@ const NewProjectForm: React.FC = () => {
 
   const errors = form.formState.errors;
 
+  const [, setSearchParams] = useSearchParams();
+  const onCloseModal = () => setSearchParams({});
+
   return (
     <AlertDialog>
-      <AlertDialogTrigger className={buttonVariants({variant: "secondary"})}>Create Project</AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
+        <Link to=".?addProject" className={buttonVariants({variant: "secondary"})}>
+          Add project
+        </Link>
+      </AlertDialogTrigger>
       <AlertDialogContent className="h-full overflow-y-scroll">
         <AlertDialogHeader className="flex flex-row items-center justify-between">
           <AlertDialogTitle>New project</AlertDialogTitle>
-          <AlertDialogCancel className={buttonVariants({variant: "ghost", className: "border-none"})}>
+          <AlertDialogCancel
+            className={buttonVariants({variant: "ghost", className: "border-none"})}
+            onClick={onCloseModal}
+          >
             <X />
           </AlertDialogCancel>
         </AlertDialogHeader>
@@ -116,7 +126,7 @@ const NewProjectForm: React.FC = () => {
             </div>
 
             <div className="flex flex-col items-stretch space-y-2">
-              <Label>City / Town / Suburb</Label>
+              <Label>State</Label>
               <Input type="text" {...form.register("address.state")} />
               {errors.address && errors.address.state && <p>{errors.address.state.message}</p>}
             </div>
@@ -138,7 +148,9 @@ const NewProjectForm: React.FC = () => {
                 <Button type="submit">Add project</Button>
               </AlertDialogAction>
               <AlertDialogCancel className="mt-0" asChild>
-                <Button variant="ghost">Cancel</Button>
+                <Button variant="ghost" onClick={onCloseModal}>
+                  Cancel
+                </Button>
               </AlertDialogCancel>
             </AlertDialogFooter>
           </Form>
