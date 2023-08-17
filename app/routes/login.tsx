@@ -14,6 +14,8 @@ import {Checkbox} from "~/components/ui/checkbox";
 import {Input} from "~/components/ui/input";
 import {FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
 
+import logo from "~/assets/everest-logo.png";
+
 export const LoginSchema = z
   .object({
     email: z.string().email({message: "Insert a valid email address"}),
@@ -69,10 +71,13 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
+    <div className="flex min-h-full flex-col justify-start md:justify-center">
+      <Link to="/" className="self-center">
+        <img src={logo} alt="Everest Facades Logo" className="mb-14" width={260} height={195} />
+      </Link>
+      <div className="mx-auto w-full max-w-md px-2 md:px-8">
         <RemixFormProvider {...form}>
-          <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-2">
+          <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-2" method="post">
             <div className="flex flex-col items-stretch space-y-2">
               <FormField
                 control={form.control}
@@ -80,7 +85,11 @@ export default function LoginPage() {
                 render={({field}) => (
                   <FormItem>
                     <FormLabel className="text-white">Email</FormLabel>
-                    <Input type="email" {...field} />
+                    <Input
+                      type="email"
+                      {...field}
+                      className="bg-background text-base placeholder:bg-background visited:bg-red-500"
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -114,12 +123,12 @@ export default function LoginPage() {
             />
 
             <Button variant="secondary" className="w-full" type="submit">
-              Submit
+              Login
             </Button>
 
             <div className="text-end text-sm">
               Don't have an account?{" "}
-              <Link className="text-blue-500 underline" to={{pathname: "/join"}}>
+              <Link className="text-primary underline" to={{pathname: "/join"}}>
                 Sign up
               </Link>
             </div>

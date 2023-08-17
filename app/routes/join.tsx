@@ -19,6 +19,8 @@ import {Input} from "~/components/ui/input";
 import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
 import {Popover, PopoverContent, PopoverTrigger} from "~/components/ui/popover";
 
+import logo from "~/assets/everest-logo.png";
+
 export const NewUserSchema = z
   .object({
     name: z.string().min(3, {message: "Name must be at least 3 characters long"}),
@@ -92,8 +94,11 @@ export default function Join() {
   });
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
+    <div className="flex min-h-full flex-col justify-start md:justify-center">
+      <Link to="/" className="self-center">
+        <img src={logo} alt="Everest Facades Logo" className="mb-14" width={260} height={195} />
+      </Link>
+      <div className="mx-auto w-full max-w-md px-2 md:px-8">
         <RemixFormProvider {...form}>
           <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-3">
             <div className="flex flex-col items-stretch space-y-2">
@@ -197,14 +202,14 @@ export default function Join() {
             </div>
             <button
               type="submit"
-              className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-400"
+              className="focus:bg-primary-80 hover:bg-primary-90 w-full bg-primary px-4 py-2 text-white"
             >
               Create Account
             </button>
             <div className="flex items-center justify-center">
               <div className="text-center text-sm text-gray-500">
                 Already have an account?{" "}
-                <Link className="text-blue-500 underline" to={{pathname: "/login"}}>
+                <Link className="text-primary underline" to={{pathname: "/login"}}>
                   Log in
                 </Link>
               </div>

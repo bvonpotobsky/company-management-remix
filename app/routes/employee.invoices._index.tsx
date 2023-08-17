@@ -2,17 +2,17 @@ import {useLoaderData} from "@remix-run/react";
 import type {LoaderArgs, LoaderFunction} from "@remix-run/node";
 import {json} from "@remix-run/node";
 
-import {requireUserId} from "~/session.server";
+import {format} from "date-fns";
+import {formatAsPrice} from "~/helpers";
 
+import type {Invoice as InvoiceType} from "@prisma/client";
+import type {UserId} from "~/models/user.server";
+
+import {requireUserId} from "~/session.server";
 import {getAllInvoicesByUserId} from "~/models/invoice.server";
 
 import {DataTable} from "~/components/ui/data-table";
 import type {ColumnDef} from "@tanstack/react-table";
-
-import type {Invoice as InvoiceType} from "@prisma/client";
-import type {UserId} from "~/models/user.server";
-import {format} from "date-fns";
-import {formatAsPrice} from "~/helpers";
 
 type Invoice = Pick<InvoiceType, "id" | "amount" | "from" | "to" | "status"> & {
   user: {
