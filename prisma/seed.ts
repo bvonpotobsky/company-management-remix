@@ -5,7 +5,7 @@ import bcryptjs from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function seed() {
-  await prisma.role.create({
+  const role = await prisma.role.create({
     data: {
       name: "admin",
     },
@@ -17,6 +17,11 @@ async function seed() {
       email: "will.admin@test.com",
       dob: new Date("1990-01-01"),
       phone: "1234567890",
+      roles: {
+        connect: {
+          id: role.id,
+        },
+      },
     },
   });
 
