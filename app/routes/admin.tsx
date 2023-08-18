@@ -21,7 +21,7 @@ export default function AdminPageLayout() {
     <div className="flex h-[100dvh] flex-col">
       <UserHeader />
       <main className="flex h-full overflow-y-auto">
-        <div className="flex-1 p-4 pt-0">
+        <div className="mb-4 flex-1 overflow-y-auto px-4">
           <Outlet />
         </div>
       </main>

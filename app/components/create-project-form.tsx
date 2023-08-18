@@ -5,6 +5,7 @@ import {type NewProject} from "~/models/project.server";
 
 import {format} from "date-fns";
 import {cn} from "~/utils";
+import {CalendarIcon, X} from "lucide-react";
 
 import {
   AlertDialog,
@@ -18,12 +19,9 @@ import {
 } from "~/components/ui/alert-dialog";
 import {Button, buttonVariants} from "~/components/ui/button";
 import {Calendar} from "~/components/ui/calendar";
-import {Label} from "~/components/ui/label";
 import {Input} from "~/components/ui/input";
 import {Popover, PopoverContent, PopoverTrigger} from "~/components/ui/popover";
 import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
-
-import {CalendarIcon, X} from "lucide-react";
 
 const defaultValues: Partial<NewProject> = {
   name: "",
@@ -44,8 +42,6 @@ const NewProjectForm: React.FC = () => {
     defaultValues,
   });
 
-  const errors = form.formState.errors;
-
   const [, setSearchParams] = useSearchParams();
   const onCloseModal = () => setSearchParams({});
 
@@ -56,7 +52,7 @@ const NewProjectForm: React.FC = () => {
           Add project
         </Link>
       </AlertDialogTrigger>
-      <AlertDialogContent className="h-full overflow-y-scroll">
+      <AlertDialogContent className="flex h-full flex-col overflow-y-scroll">
         <AlertDialogHeader className="flex flex-row items-center justify-between">
           <AlertDialogTitle>New project</AlertDialogTitle>
           <AlertDialogCancel
@@ -70,9 +66,19 @@ const NewProjectForm: React.FC = () => {
         <RemixFormProvider {...form}>
           <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-3" method="post">
             <div className="flex flex-col items-stretch space-y-2">
-              <Label>Name</Label>
-              <Input type="text" {...form.register("name")} />
-              {errors.name && <p>{errors.name.message}</p>}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({field}) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex flex-col items-stretch space-y-2">
@@ -114,33 +120,83 @@ const NewProjectForm: React.FC = () => {
             </div>
 
             <div className="flex flex-col items-stretch space-y-2">
-              <Label>Street</Label>
-              <Input type="text" {...form.register("address.street")} />
-              {errors.address && errors.address.street && <p>{errors.address.street.message}</p>}
+              <FormField
+                control={form.control}
+                name="address.street"
+                render={({field}) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Street</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex flex-col items-stretch space-y-2">
-              <Label>City / Town / Suburb</Label>
-              <Input type="text" {...form.register("address.city")} />
-              {errors.address && errors.address.city && <p>{errors.address.city.message}</p>}
+              <FormField
+                control={form.control}
+                name="address.city"
+                render={({field}) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>City / Town / Suburb</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex flex-col items-stretch space-y-2">
-              <Label>State</Label>
-              <Input type="text" {...form.register("address.state")} />
-              {errors.address && errors.address.state && <p>{errors.address.state.message}</p>}
+              <FormField
+                control={form.control}
+                name="address.state"
+                render={({field}) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>State</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex flex-col items-stretch space-y-2">
-              <Label>ZIP Code</Label>
-              <Input type="text" {...form.register("address.zip")} />
-              {errors.address && errors.address.zip && <p>{errors.address.zip.message}</p>}
+              <FormField
+                control={form.control}
+                name="address.zip"
+                render={({field}) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>ZIP Code</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex flex-col items-stretch space-y-2">
-              <Label>Country</Label>
-              <Input type="text" {...form.register("address.country")} />
-              {errors.address && errors.address.country && <p>{errors.address.country.message}</p>}
+              <FormField
+                control={form.control}
+                name="address.country"
+                render={({field}) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Country</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <AlertDialogFooter className="flex flex-row items-center space-x-2">

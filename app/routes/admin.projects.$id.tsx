@@ -57,7 +57,7 @@ export default function AdminProjecIdRoute() {
 
   return (
     <section className="relative flex w-full flex-col items-center justify-between">
-      <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
+      <header className="sticky top-0 flex items-center justify-between space-y-0.5 bg-background py-3">
         <GoBackURL to="../projects" />
         <AddMemberToProjectForm projectId={project.id} />
       </header>

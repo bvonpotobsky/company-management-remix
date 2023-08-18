@@ -1,4 +1,4 @@
-import {useLoaderData} from "@remix-run/react";
+import {Link, useLoaderData} from "@remix-run/react";
 import type {LoaderArgs, LoaderFunction} from "@remix-run/node";
 import {json} from "@remix-run/node";
 
@@ -25,25 +25,43 @@ export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "id",
     header: "Invoice",
+    cell: ({row}) => {
+      const id = row.original.id;
+      return <Link to={`./${id}`}>{id}</Link>;
+    },
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({row}) => <p className="capitalize">{row.original.status.toLowerCase()}</p>,
+    cell: ({row}) => {
+      const id = row.original.id;
+
+      return (
+        <Link to={`./${id}`} className="capitalize">
+          {row.original.status.toLowerCase()}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "to",
     header: "Date",
-    cell: ({row}) => (
-      <p>
-        {format(row.original.from, "dd/MM")} to {format(row.original.to, "dd/MM")}
-      </p>
-    ),
+    cell: ({row}) => {
+      const id = row.original.id;
+      return (
+        <Link to={`./${id}`}>
+          {format(row.original.from, "dd/MM")} to {format(row.original.to, "dd/MM")}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "amount",
     header: "Amount",
-    cell: ({row}) => <p>{formatAsPrice(row.original.amount)}</p>,
+    cell: ({row}) => {
+      const id = row.original.id;
+      return <Link to={`./${id}`}>{formatAsPrice(row.original.amount)}</Link>;
+    },
   },
 ];
 
@@ -63,14 +81,15 @@ export default function EmployeeInvoicesRoute() {
 
   return (
     <section className="relative flex w-full flex-col items-stretch justify-start">
-      <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
-        <h3 className="text-2xl font-semibold tracking-tight">Invoices</h3>
+      <header className="sticky top-0 flex flex-col space-y-0.5 bg-background py-3">
+        <h2 className="text-2xl font-bold tracking-tight">Invoices</h2>
+        <p className="text-sm text-muted-foreground">View all your received invoices here.</p>
       </header>
 
       <DataTable
         data={invoices.map((invoice) => ({
           ...invoice,
-          id: invoice.id.slice(0, 3),
+          id: invoice.id.slice(0, 4),
           from: new Date(invoice.from),
           to: new Date(invoice.to),
         }))}

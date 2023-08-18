@@ -55,13 +55,7 @@ const Overview: React.FC = () => {
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>
-        <XAxis
-          dataKey="name"
-          stroke="#888888"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-        />
+        <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
         <YAxis
           stroke="#888888"
           fontSize={12}
@@ -69,7 +63,7 @@ const Overview: React.FC = () => {
           axisLine={false}
           tickFormatter={(value: string) => `$${value}`}
         />
-        <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="total" fill="#ea580c" radius={[2, 2, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

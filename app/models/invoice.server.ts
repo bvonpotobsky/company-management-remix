@@ -116,9 +116,9 @@ export const createInvoiceByUserId = async ({id, fromDate, toDate}: {id: string;
   return invoice;
 };
 
-export const createAllUsersInvoices = async ({fromDate, toDate}: {fromDate: Date; toDate: Date}) => {
-  const _from = new Date(fromDate.setHours(0, 0, 0, 0));
-  const _to = new Date(toDate.setHours(23, 59, 59, 999));
+export const createAllUsersInvoicesBetweenDates = async ({from, to}: {from: Date; to: Date}) => {
+  const _from = new Date(from.setHours(0, 0, 0, 0));
+  const _to = new Date(to.setHours(23, 59, 59, 999));
 
   // ToDo: Optimize this query???
   const users = await prisma.user.findMany({
@@ -156,14 +156,14 @@ export const createAllUsersInvoices = async ({fromDate, toDate}: {fromDate: Date
       });
 
       const totalWorkedInMiliseconds = shifts.reduce((acc, shift) => {
-        const hoursWorked = calculateHoursWorked(new Date(shift.start), new Date(shift.end ? shift.end : shift.start));
+        const hoursWorked = calculateHoursWorked(new Date(shift.start), new Date(shift.end));
 
         return acc + hoursWorked;
       }, 0);
 
       const totalWorkedInHours = totalWorkedInMiliseconds / 1000 / 60 / 60;
 
-      const invoice = prisma.invoice.create({
+      const invoice = await prisma.invoice.create({
         data: {
           from: _from,
           to: _to,
@@ -183,5 +183,6 @@ export const createAllUsersInvoices = async ({fromDate, toDate}: {fromDate: Date
       return invoice;
     })
   );
+
   return invoices;
 };

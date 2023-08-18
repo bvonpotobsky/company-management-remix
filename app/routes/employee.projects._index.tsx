@@ -36,8 +36,8 @@ export default function AdminProjectsRoute() {
 
   return (
     <section className="relative flex w-full flex-col">
-      <header className="py-3">
-        <h3 className="text-lg font-medium">Projects</h3>
+      <header className="flex flex-col space-y-0.5 bg-background py-3">
+        <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
         <p className="text-sm text-muted-foreground">Here you can see all the projects you are assigned to.</p>
       </header>
 

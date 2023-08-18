@@ -24,6 +24,8 @@ const resolver = zodResolver(NewProjectSchema);
 export const action = async ({request}: ActionArgs) => {
   const {data, errors} = await getValidatedFormData<NewProject>(request, resolver);
 
+  console.log({data, errors});
+
   if (errors) return json({errors});
 
   const project = await createProject({project: data});
@@ -37,8 +39,8 @@ export default function AdminProjectsRoute() {
 
   return (
     <section className="relative flex w-full flex-col items-stretch justify-start">
-      <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
-        <h3 className="text-2xl font-semibold tracking-tight">Projects</h3>
+      <header className="sticky top-0 flex items-center justify-between space-y-0.5 bg-background py-3">
+        <h2 className="text-2xl font-bold tracking-tight">Projects</h2>
         <NewProjectForm />
       </header>
 

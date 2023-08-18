@@ -2,6 +2,7 @@ import {cssBundleHref} from "@remix-run/css-bundle";
 import type {LinksFunction, LoaderArgs, LoaderFunction} from "@remix-run/node";
 import {json} from "@remix-run/node";
 import {Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration} from "@remix-run/react";
+import {Toaster} from "~/components/ui/toaster";
 
 import {getUser} from "~/session.server";
 import stylesheet from "~/tailwind.css";
@@ -37,6 +38,7 @@ function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+        <Toaster />
       </body>
     </html>
   );

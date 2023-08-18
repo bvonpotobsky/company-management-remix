@@ -98,7 +98,7 @@ export default function Join() {
       <Link to="/" className="self-center">
         <img src={logo} alt="Everest Facades Logo" className="mb-14" width={260} height={195} />
       </Link>
-      <div className="mx-auto w-full max-w-md px-2 md:px-8">
+      <div className="mx-auto w-full max-w-md px-4 md:px-8">
         <RemixFormProvider {...form}>
           <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-3">
             <div className="flex flex-col items-stretch space-y-2">

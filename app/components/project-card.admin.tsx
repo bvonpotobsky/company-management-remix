@@ -29,7 +29,7 @@ const ProjectCardAdmin: React.FC<{project: Project}> = ({project}) => {
   //   });
 
   return (
-    <Card className="mb-4 last:mb-0">
+    <Card className="mb-4">
       <CardHeader className="flex w-full flex-row items-center justify-start gap-x-3 border-b p-3">
         <Building className="ml-1 h-7 w-7 text-muted-foreground" />
         <CardTitle className="text-xl font-semibold tracking-wide first-letter:uppercase">{project.name}</CardTitle>
@@ -80,10 +80,12 @@ const ProjectOptions: React.FC<{projectId: string}> = ({projectId}) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent side="left" align="start" forceMount>
-        <DropdownMenuItem className="cursor-pointer">Edit project</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link to={`./${projectId}`}>Edit project</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" asChild>
-          <Link to={`/admin/projects/${projectId}?addMember`}>Add member</Link>
+          <Link to={`./${projectId}?addMember`}>Add member</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer text-red-500">Delete project</DropdownMenuItem>
