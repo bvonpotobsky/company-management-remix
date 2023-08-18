@@ -5,6 +5,13 @@ import bcryptjs from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function seed() {
+  console.log(`Seeding database...`);
+
+  // clear db
+  await prisma.password.deleteMany();
+  await prisma.role.deleteMany();
+  await prisma.user.deleteMany();
+
   const role = await prisma.role.create({
     data: {
       name: "admin",

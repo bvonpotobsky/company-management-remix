@@ -60,7 +60,18 @@ export default function AdminProjecIdRoute() {
         <AddMemberToProjectForm projectId={project.id} />
       </header>
 
-      {JSON.stringify(project, null, 2)}
+      <main className="flex w-full flex-col items-center justify-center space-y-4">
+        <h1 className="text-2xl font-bold">Project: {project.name}</h1>
+        <h2 className="text-xl font-bold">Members</h2>
+        <ul className="flex w-full flex-col items-center justify-center space-y-4">
+          {project.members.map((member) => (
+            <li key={member.id} className="flex w-full flex-col items-center justify-center space-y-2">
+              <span>{member.user.name}</span>
+              <span>{member.role}</span>
+            </li>
+          ))}
+        </ul>
+      </main>
     </section>
   );
 }
