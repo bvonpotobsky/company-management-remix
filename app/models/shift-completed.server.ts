@@ -86,3 +86,48 @@ export const getAllCompletedShiftsByUserIdAndProjectId = async ({
 
   return shifts;
 };
+
+export const getAllCompletedShiftBetweenDatesByUserId = async ({
+  from,
+  to,
+  userId,
+}: {
+  from: Date;
+  to: Date;
+  userId: UserId;
+}) => {
+  const shifts = await prisma.shiftCompleted.findMany({
+    where: {
+      userId: userId,
+      date: {
+        gte: from,
+        lte: to,
+      },
+    },
+    select: {
+      id: true,
+      start: true,
+      end: true,
+    },
+  });
+
+  return shifts;
+};
+
+export const getAllCompletedShiftBetweenDates = async ({from, to}: {from: Date; to: Date}) => {
+  const shifts = await prisma.shiftCompleted.findMany({
+    where: {
+      date: {
+        gte: from,
+        lte: to,
+      },
+    },
+    select: {
+      id: true,
+      start: true,
+      end: true,
+    },
+  });
+
+  return shifts;
+};

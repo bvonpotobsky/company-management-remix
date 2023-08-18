@@ -23,10 +23,11 @@ model User {
   addressId   String?       @unique
   bankAccount BankAccount[]
 
+  invoiceCount   Int              @default(0)
+  invoices       Invoice[]
   projectMember  ProjectMember[]
   shiftActive    ShiftActive[]
   shiftCompleted ShiftCompleted[]
-  invoices       Invoice[]
   roles          Role[]
   logs           Logs[]
 
@@ -170,11 +171,12 @@ enum InvoiceStatus {
 }
 
 model Invoice {
-  id     String        @id @default(cuid())
-  from   DateTime
-  to     DateTime
-  amount Float
-  status InvoiceStatus
+  id        String        @id @default(cuid())
+  userCount Int // This is for the invoice number of the user
+  from      DateTime
+  to        DateTime
+  amount    Float
+  status    InvoiceStatus
 
   user   User   @relation(fields: [userId], references: [id])
   userId String

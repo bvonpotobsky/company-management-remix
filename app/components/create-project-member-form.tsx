@@ -33,8 +33,6 @@ const AddMemberToProjectForm: React.FC<{projectId: string}> = ({projectId}) => {
     defaultValues,
   });
 
-  // const errors = form.formState.errors;
-
   const [searchParams, setSearchParams] = useSearchParams();
   const onCloseModal = () => setSearchParams({});
 
