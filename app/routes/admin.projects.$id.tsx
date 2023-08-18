@@ -53,8 +53,6 @@ export default function AdminProjecIdRoute() {
 
   invariant(project, `You must provide a project id to this route.`);
 
-  // const isAddMemberModalOpen =
-
   return (
     <section className="relative flex w-full flex-col items-center justify-between">
       <header className="sticky top-0 flex w-full items-center justify-between space-y-0.5 bg-background py-3">

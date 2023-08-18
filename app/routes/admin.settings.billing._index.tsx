@@ -1,118 +1,150 @@
-import {Form, Link} from "@remix-run/react";
+import {Form, useLoaderData} from "@remix-run/react";
 
-import {RemixFormProvider, useRemixForm} from "remix-hook-form";
+import {RemixFormProvider, getValidatedFormData, useRemixForm} from "remix-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-
-import * as z from "zod";
 
 import {Button} from "~/components/ui/button";
 import {Input} from "~/components/ui/input";
-import {FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
+import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
 import {Separator} from "~/components/ui/separator";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "~/components/ui//select";
-import {Textarea} from "~/components/ui/textarea";
+
+import type {ActionArgs, ActionFunction, LoaderFunction} from "@remix-run/node";
+import {json, redirect} from "@remix-run/node";
+import {requireUserId} from "~/session.server";
+import type {UpdateBilling} from "~/models/billing.server";
+import {UpdateBillingSchema, getBillingByUserId, updateOrCreateBillingByUserId} from "~/models/billing.server";
+
+const resolver = zodResolver(UpdateBillingSchema);
+
+type Loader = {
+  billing: Awaited<ReturnType<typeof getBillingByUserId>>;
+};
+
+export const loader: LoaderFunction = async ({request}) => {
+  const userId = await requireUserId(request);
+  const billing = await getBillingByUserId({id: userId});
+
+  return json<Loader>({billing});
+};
+
+export const action: ActionFunction = async ({request}: ActionArgs) => {
+  const userId = await requireUserId(request);
+
+  const {data, errors} = await getValidatedFormData<UpdateBilling>(request, resolver);
+
+  if (errors) return json({errors});
+
+  // ToDo: Check best way to handle this.
+  await updateOrCreateBillingByUserId({userId, data});
+
+  return redirect("/admin/settings/billing");
+};
 
 export default function AdminProfileRoute() {
+  const {billing} = useLoaderData<Loader>();
+
   return (
     <section className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">Billing</h3>
-        <p className="text-sm text-muted-foreground">Manage your billing information and view your invoices.</p>
+        <p className="text-sm text-muted-foreground">Manage your bank account and billing information.</p>
       </div>
       <Separator />
-      <ProfileForm />
+      <ProfileForm billing={billing} />
     </section>
   );
 }
 
-const profileFormSchema = z.object({
-  username: z
-    .string()
-    .min(2, {message: "Username must be at least 2 characters."})
-    .max(30, {message: "Username must not be longer than 30 characters."}),
-  email: z.string({required_error: "Please select an email to display."}).email(),
-  bio: z.string().max(160).min(4),
-  urls: z.array(z.object({value: z.string().url({message: "Please enter a valid URL."})})).optional(),
-});
+const ProfileForm: React.FC<{billing: Loader["billing"]}> = ({billing}) => {
+  // This can come from your database or API.
+  const defaultValues: Partial<UpdateBilling> = {
+    abn: billing?.abn ?? "",
+    tfn: billing?.tfn ?? "",
+    bankName: billing?.bankAccount?.bankName ?? "",
+    accountNumber: billing?.bankAccount?.accountNumber ?? "",
+    bsb: billing?.bankAccount?.bsb ?? "",
+  };
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
-
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I own a computer.",
-  urls: [{value: "https://shadcn.com"}, {value: "http://twitter.com/shadcn"}],
-};
-
-function ProfileForm() {
-  const form = useRemixForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+  const form = useRemixForm<UpdateBilling>({
     defaultValues,
     mode: "onChange",
   });
 
   return (
     <RemixFormProvider {...form}>
-      <Form onSubmit={form.handleSubmit} className="space-y-8">
+      <Form onSubmit={form.handleSubmit} className="space-y-4">
         <FormField
           control={form.control}
-          name="username"
+          name="bankName"
           render={({field}) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Bank Name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="Commonwealth Bank" {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name. It can be your real name or a pseudonym. You can only change this once
-                every 30 days.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
-          name="email"
+          name="bsb"
           render={({field}) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                You can manage verified email addresses in your <Link to="/profile/account">email settings</Link>.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
+              <FormLabel>BSB</FormLabel>
               <FormControl>
-                <Textarea placeholder="Tell us a little bit about yourself" className="resize-none" {...field} />
+                <Input placeholder="124 213" {...field} />
               </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to link to them.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="accountNumber"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>Account Number</FormLabel>
+              <FormControl>
+                <Input placeholder="1234 5678" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="abn"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>ABN</FormLabel>
+              <FormControl>
+                <Input placeholder="1234 5678" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tfn"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>TFN</FormLabel>
+              <FormControl>
+                <Input placeholder="1234 5678" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit">Update profile</Button>
       </Form>
     </RemixFormProvider>
   );
-}
+};

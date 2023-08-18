@@ -66,7 +66,7 @@ const ProfileForm: React.FC<{user: Awaited<ReturnType<typeof getUserById>>}> = (
 
   return (
     <RemixFormProvider {...form}>
-      <Form onSubmit={form.handleSubmit} className="space-y-8">
+      <Form onSubmit={form.handleSubmit} className="space-y-4">
         <FormField
           control={form.control}
           name="name"

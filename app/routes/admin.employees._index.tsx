@@ -41,11 +41,10 @@ export const columns: ColumnDef<Invoice>[] = [
 export default function AdminInvoicesRoute() {
   return (
     <section className="relative flex w-full flex-col items-stretch justify-start">
-      <header className="flex items-center justify-between space-y-0.5 bg-background py-3">
-        <h2 className="text-2xl font-bold tracking-tight">Employees</h2>
+      <header className="sticky top-0 flex items-center justify-between space-y-0.5 bg-background py-3">
+        <h2 className="text-2xl font-bold">Employees</h2>
       </header>
-
-      <h5>Here you will be able to see all the employees.</h5>
+      <h5 className="text-sm text-muted-foreground">Here you will be able to see all the employees.</h5>
     </section>
   );
 }

@@ -18,7 +18,7 @@ export async function getUserById(id: UserId) {
       bankAccount: {
         select: {
           bankName: true,
-          account: true,
+          accountNumber: true,
           bsb: true,
         },
       },
