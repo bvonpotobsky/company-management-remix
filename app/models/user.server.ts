@@ -8,10 +8,30 @@ import type {Password, User} from "@prisma/client";
 export async function getUserById(id: UserId) {
   return prisma.user.findUnique({
     where: {id},
-    include: {
+    select: {
+      id: true,
+      name: true,
+      phone: true,
+      verified: true,
+      email: true,
+      emailVerified: true,
+      bankAccount: {
+        select: {
+          bankName: true,
+          account: true,
+          bsb: true,
+        },
+      },
       roles: {
-        include: {
-          permissions: true,
+        select: {
+          id: true,
+          name: true,
+          permissions: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       },
     },

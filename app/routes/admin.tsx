@@ -1,6 +1,6 @@
 import type {LoaderArgs} from "@remix-run/node";
 import {json} from "@remix-run/node";
-import {NavLink, Outlet} from "@remix-run/react";
+import {Link, Outlet} from "@remix-run/react";
 
 import {requireAdmin} from "~/session.server";
 
@@ -14,7 +14,7 @@ export const loader = async ({request}: LoaderArgs) => {
   return json({});
 };
 
-export default function AdminPage() {
+export default function AdminPageLayout() {
   const windowSize = useWindowSize();
 
   return (
@@ -34,16 +34,12 @@ const NavbarMobile: React.FC<{
   routes: Route[] & React.HTMLAttributes<HTMLDivElement>;
 }> = ({routes, ...props}) => {
   return (
-    <div className="mt-2 w-full border-t opacity-95">
+    <div className="absolute bottom-0 h-14 w-full border-t bg-background">
       <nav className="mx-auto grid h-14 max-w-lg grid-flow-col font-medium" {...props}>
         {routes.map((route) => (
-          <NavLink
-            key={route.href}
-            to={route.href}
-            className="group inline-flex h-full cursor-pointer flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-900"
-          >
+          <Link key={route.href} to={route.href} className="flex flex-col items-center justify-center">
             {route.icon}
-          </NavLink>
+          </Link>
         ))}
       </nav>
     </div>

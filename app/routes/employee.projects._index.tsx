@@ -35,10 +35,10 @@ export default function AdminProjectsRoute() {
   const {projects} = useLoaderData<typeof loader>();
 
   return (
-    <section className="relative flex w-full flex-col items-stretch justify-start">
-      <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
-        <h3 className="text-2xl font-semibold tracking-tight">Projects</h3>
-        {/* <NewProjectForm /> */}
+    <section className="relative flex w-full flex-col">
+      <header className="py-3">
+        <h3 className="text-lg font-medium">Projects</h3>
+        <p className="text-sm text-muted-foreground">Here you can see all the projects you are assigned to.</p>
       </header>
 
       {projects.map((project) => (

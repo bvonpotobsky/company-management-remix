@@ -41,10 +41,7 @@ export default function EmployeeProjectIdRoute() {
     <section className="relative flex w-full flex-col items-center justify-between">
       <header className="sticky top-0 flex w-full scroll-m-20 items-center justify-between bg-background py-3">
         <GoBackURL to="../projects" />
-
-        <Badge className="text-base" variant="sucess">
-          {project.status}
-        </Badge>
+        <Badge className="rounded-sm hover:bg-primary">{project.status}</Badge>
       </header>
 
       <div className="flex w-full items-center justify-between">

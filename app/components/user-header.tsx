@@ -1,10 +1,10 @@
-import {Form} from "@remix-run/react";
+import {Form, Link} from "@remix-run/react";
 
-import {useTheme} from "~/theme-provider";
-import {getNameInitials} from "~/helpers/index";
+// import {useTheme} from "~/theme-provider";
+// import {getNameInitials} from "~/helpers/index";
 import {useUser} from "~/utils";
 
-import {CreditCardIcon, LogOutIcon, MoonIcon, PlusCircleIcon, SettingsIcon, SunIcon, UserIcon} from "lucide-react";
+import {CreditCardIcon, LogOutIcon, SettingsIcon, UserIcon} from "lucide-react";
 
 import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
 import {Button} from "~/components/ui/button";
@@ -19,16 +19,18 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
+import logo from "~/assets/everest-logo.png";
+
 const UserHeader = () => {
-  const [theme, setTheme] = useTheme();
+  // const [theme, setTheme] = useTheme();
 
   return (
     <header className="border-b bg-background px-3 text-white">
-      <nav className="flex h-16 w-full items-center justify-between gap-x-2">
+      <nav className="flex h-14 w-full items-center justify-end gap-x-2">
         <Logo />
-        <Button variant="ghost" size="sm" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+        {/* <Button variant="ghost" size="sm" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
           {theme === "light" ? <MoonIcon /> : <SunIcon />}
-        </Button>
+        </Button> */}
         <UserMenu />
       </nav>
     </header>
@@ -46,7 +48,10 @@ const UserMenu = () => {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={undefined} alt={`Profile image of ${user?.name}`} />
-            <AvatarFallback>{getNameInitials(user?.name ?? "AA")}</AvatarFallback>
+            {/* <AvatarFallback>{getNameInitials(user?.name ?? "AA")}</AvatarFallback> */}
+            <AvatarFallback>
+              <UserIcon />
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -59,25 +64,35 @@ const UserMenu = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            {/* <Link href="/admin/profile"> */}
-            <UserIcon className="mr-2 h-4 w-4" />
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <Link
+              to="./settings/profile"
+              className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            >
+              <UserIcon className="mr-2 h-4 w-4" />
+              Profile
+              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <CreditCardIcon className="mr-2 h-4 w-4" />
-            <span>Billing</span>
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <Link
+              to="./settings/billing"
+              className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            >
+              <CreditCardIcon className="mr-2 h-4 w-4" />
+              <span>Billing</span>
+              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <SettingsIcon className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <PlusCircleIcon className="mr-2 h-4 w-4" />
-            <span>New Team</span>
+          <DropdownMenuItem asChild>
+            <Link
+              to="./settings/notifications"
+              className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            >
+              <SettingsIcon className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -99,5 +114,9 @@ const UserMenu = () => {
 // import {Acme} from "next/font/google";
 
 export const Logo = () => {
-  return <h1 className="mr-auto text-black dark:text-white">IMK</h1>;
+  return (
+    <Link to="/" className="mr-auto">
+      <img src={logo} alt="Everest Facades Logo" width={60} height={45} />
+    </Link>
+  );
 };

@@ -68,7 +68,7 @@ const NewProjectForm: React.FC = () => {
         </AlertDialogHeader>
 
         <RemixFormProvider {...form}>
-          <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-3">
+          <Form onSubmit={form.handleSubmit} className="last:mb-0 [&>*]:mb-3" method="post">
             <div className="flex flex-col items-stretch space-y-2">
               <Label>Name</Label>
               <Input type="text" {...form.register("name")} />
