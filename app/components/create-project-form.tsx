@@ -1,4 +1,4 @@
-import {Form, Link, useSearchParams} from "@remix-run/react";
+import {Form, Link, useNavigation, useSearchParams} from "@remix-run/react";
 import {RemixFormProvider, useRemixForm} from "remix-hook-form";
 
 import {type NewProject} from "~/models/project.server";
@@ -9,7 +9,6 @@ import {CalendarIcon, X} from "lucide-react";
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
@@ -37,6 +36,10 @@ const defaultValues: Partial<NewProject> = {
 };
 
 const NewProjectForm: React.FC = () => {
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
+
   const form = useRemixForm<NewProject>({
     mode: "onSubmit",
     defaultValues,
@@ -200,14 +203,17 @@ const NewProjectForm: React.FC = () => {
             </div>
 
             <AlertDialogFooter className="flex flex-row items-center space-x-2">
-              <AlertDialogAction asChild>
-                <Button type="submit">Add project</Button>
-              </AlertDialogAction>
-              <AlertDialogCancel className="mt-0" asChild>
-                <Button variant="ghost" onClick={onCloseModal}>
-                  Cancel
-                </Button>
-              </AlertDialogCancel>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Creating project" : "Add project"}
+              </Button>
+
+              {!isSubmitting && (
+                <AlertDialogCancel className="mt-0" asChild>
+                  <Button variant="ghost" onClick={onCloseModal}>
+                    Cancel
+                  </Button>
+                </AlertDialogCancel>
+              )}
             </AlertDialogFooter>
           </Form>
         </RemixFormProvider>

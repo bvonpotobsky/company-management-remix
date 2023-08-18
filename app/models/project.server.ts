@@ -108,15 +108,15 @@ export const getAllProjectsByUserId = async ({id}: {id: UserId}) => {
 // Schema -> Validation
 export const NewProjectSchema = z
   .object({
-    name: z.string(),
+    name: z.string().min(3).max(50),
     startDate: z.coerce.date(),
     status: z.enum(["ACTIVE", "INACTIVE", "ARCHIVED"]),
     address: z.object({
-      street: z.string(),
-      city: z.string(),
-      state: z.string(),
-      zip: z.string(),
-      country: z.string(),
+      street: z.string().min(2).max(50),
+      city: z.string().min(2).max(50),
+      state: z.string().min(2).max(50),
+      zip: z.string().min(2).max(10),
+      country: z.string().min(2).max(50),
     }),
   })
   .required();

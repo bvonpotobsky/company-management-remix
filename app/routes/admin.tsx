@@ -21,7 +21,8 @@ export default function AdminPageLayout() {
     <div className="flex h-[100dvh] flex-col">
       <UserHeader />
       <main className="flex h-full overflow-y-auto">
-        <div className="mb-4 flex-1 overflow-y-auto px-4">
+        {/* pb-14: its because every outlet-page will have a sticky header. we need that padding to be able to show and scroll till the end of the page */}
+        <div className="mb-4 flex-1 overflow-y-auto px-4 pb-14">
           <Outlet />
         </div>
       </main>

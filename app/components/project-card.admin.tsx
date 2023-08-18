@@ -29,7 +29,7 @@ const ProjectCardAdmin: React.FC<{project: Project}> = ({project}) => {
   //   });
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 last:mb-0">
       <CardHeader className="flex w-full flex-row items-center justify-start gap-x-3 border-b p-3">
         <Building className="ml-1 h-7 w-7 text-muted-foreground" />
         <CardTitle className="text-xl font-semibold tracking-wide first-letter:uppercase">{project.name}</CardTitle>

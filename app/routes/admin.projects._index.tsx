@@ -1,6 +1,6 @@
 import {useLoaderData} from "@remix-run/react";
 import type {ActionArgs, LoaderArgs} from "@remix-run/node";
-import {json} from "@remix-run/node";
+import {json, redirect} from "@remix-run/node";
 
 import {requireAdmin} from "~/session.server";
 import {getAllProjectsWithMembers, createProject, NewProjectSchema} from "~/models/project.server";
@@ -24,14 +24,12 @@ const resolver = zodResolver(NewProjectSchema);
 export const action = async ({request}: ActionArgs) => {
   const {data, errors} = await getValidatedFormData<NewProject>(request, resolver);
 
-  console.log({data, errors});
-
   if (errors) return json({errors});
 
   const project = await createProject({project: data});
   if (!project) return json({errors: {name: "Something went wrong"}}, {status: 500});
 
-  return json({project});
+  return redirect(`/admin/projects/${project.id}`);
 };
 
 export default function AdminProjectsRoute() {
